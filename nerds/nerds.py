@@ -3,6 +3,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, \
      check_password_hash
 
+from forms import *
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nerds.db'
 db = SQLAlchemy(app)
@@ -28,11 +30,8 @@ class User(db.Model):
         self.firstname = first
         self.lastname = last
         self.email = mail
-        self.pwhash = set_password(pw)
+        self.pwhash = generate_password_hash(pw)
         self.schedID = 0;
-
-    def set_password(self, password):
-        self.pwhash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.pwhash, password)
@@ -98,28 +97,35 @@ def index():
 
 @app.route("/register/", methods=['GET','POST'])
 def register():
+    form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         create_user(form.first_name.data, form.last_name.data, form.email.data, form.password.data)
         flash('Your account was successfully created. Welcome, ' + form.first_name.data + "!")
         return redirect(url_for('login'))
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 @app.route("/login/", methods=['GET','POST'])
 def login():
+    form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter_by(email=form.email.data).first()
-        if user.check_password():
+        if user is not None and user.check_password(form.password.data):
             flash('logged in as ' + user.firstname + " " + user.lastname)
             session["user_id"] = user.id
+            session["firstlast"] = user.firstname + " " + user.lastname
             return redirect(url_for('index')) # or myprofile?
         else:
-            flash('incorrect password')
+            flash('incorrect email or password')
             return redirect(url_for('login'))
-    return render_template('base.html')
+    else:
+        return render_template('login.html', form=form)
 
 @app.route('/logout/')
 def logout():
-    session.pop('user_id', None)
+    if "user_id" in session:
+        session["user_id"] = ""
+        print "logged out"
+        flash("logged out")
     return redirect(url_for('index'))
 
 @app.route('/class/<int:class_id>/')
@@ -128,21 +134,34 @@ def class_overview(class_id):
 
 @app.route('/edit/', methods=['GET','POST'])
 def class_edit():
+    form = ScheduleForm(request.form)
     if request.method == 'POST' and form.validate():
-        pass #added new class to db
+        class1id = create_class(form.c1_teacher.data, form.c1_dif.data, form.c1_period.data)
+        class2id = create_class(form.c2_teacher.data, form.c2_dif.data, form.c2_period.data)
+        class3id = create_class(form.c3_teacher.data, form.c3_dif.data, form.c3_period.data)
+        class4id = create_class(form.c4_teacher.data, form.c4_dif.data, form.c4_period.data)
+        class5id = create_class(form.c5_teacher.data, form.c5_dif.data, form.c5_period.data)
+        class6id = create_class(form.c6_teacher.data, form.c6_dif.data, form.c6_period.data)
+        class7id = create_class(form.c7_teacher.data, form.c7_dif.data, form.c7_period.data)
+        schedule = Schedule(class1id, class2id, class3id, class4id, class5id, class6id, class7id)
+
     if "user_id" in session:
-        print "edit schedule stuff"
-    flash("You need to log in to edit your schedule")
+        flash("schedule changed")
+    else:
+        flash("You need to log in to edit your schedule")
     return redirect(url_for('index'))
+
+@app.route('/createclass/', methods=['GET','POST'])
+
 
 @app.route('/user/<int:user_id>/')
 def user_overview(user_id):
     if User.query.filter_by(id=user_id).first() is not None: #if it's a real user
         schedule = get_schedule(user_id)
-#-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+        return render_template('user_overview.html', schedule=schedule)
     else:
         flash("that user does not exist")
-    return redirect(url_for('index'))
+        return redirect(url_for('index'))
 
 @app.route('/secretclubhouse/')
 def secret_clubhouse():
@@ -153,21 +172,25 @@ def create_user(fn, ln, email, pw):
     new_user = User(fn, ln, email, pw)
     db.session.add(new_user)
     db.session.commit()
+    return new_user.id
 
 def create_schedule(c1, c2, c3, c4, c5, c6, c7):
     new_schedule = Schedule(c1, c2, c3, c4, c5, c6, c7)
     db.session.add(new_schedule)
     db.session.commit()
+    return new_schedule.id
 
 def create_class(teach, dif, per):
     new_class = Class(teach, dif, per)
     db.session.add(new_schedule)
     db.session.commit()
+    return new_class.id
 
 
 #returns a list of classes
 def get_schedule(user_id):
     user = User.query.filter_by(id=session["user_id"]).first()
+    if user.schedID == 0: return []
     schedule = Schedule.query.filter_by(id=user.schedID)
     return [
         Class.query.filter_by(id=schedule.first).first(),

@@ -1,12 +1,64 @@
-<!doctype html>
-<head>
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-</head>
-<body>
-<h3>register</h3>
-        <form action="" method="post">
-            <p>username: <input type=text name=username>
-            <p>password: <input type=password name=password>
-            <p><input type=submit value=Login>
-        </form>
-</body>
+{% extends "base.html" %}
+{% block title %}login{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        form {
+            color: #111;
+            text-align: center;
+        }
+        
+        input {
+            margin: 5px;
+            
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        #content {
+            margin-top: 50px; 
+            background-color: #222;
+                width: 40%;
+                height: 100%;
+                border-style: solid;
+                border-width: 3px;
+                border-color: #222;
+                border-radius: 15px;
+                box-shadow: 5px 5px #111;
+            }
+            
+            .errors {
+                color: red;
+            }     
+    </style>
+{% endblock %}
+{% block content %}
+<h1> Register </h1>
+    <form action="" method="post" name="login">
+    <p>
+        <div>{{ form.first_name(placeholder="first name") }}</div>
+        {% if form.first_name.errors %}
+            <div class="errors">{% for error in form.first_name.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+        <div>{{ form.last_name(placeholder="last name") }}</div>
+        {% if form.last_name.errors %}
+            <div class="errors">{% for error in form.last_name.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+        <div>{{ form.email(placeholder="email") }}</div>
+        {% if form.email.errors %}
+            <div class="errors">{% for error in form.email.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+        <div>{{ form.password(placeholder="password") }}</div>
+        {% if form.password.errors %}
+            <div class="errors">{% for error in form.password.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+        <div>{{ form.confirm(placeholder="repeat password") }}</div>
+        {% if form.confirm.errors %}
+            <div class="errors">{% for error in form.confirm.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </p>
+    <p><input type="submit" value="Create Account"></p>
+    </form>
+{% endblock %}

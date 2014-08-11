@@ -1,12 +1,40 @@
-<!doctype html>
-<head>
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-</head>
-<body>
-<h3>register</h3>
-        <form action="" method="post">
-            <p>username: <input type=text name=username>
-            <p>password: <input type=password name=password>
-            <p><input type=submit value=Login>
-        </form>
-</body>
+{% extends "base.html" %}
+{% block title %}login{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        form {
+            color: #111;
+            text-align: center;  
+        }
+        
+        input {
+            margin: 5px;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        #content {
+            background-color: #222;
+                width: 40%;
+                height: 100%;
+                border-style: solid;
+                border-width: 3px;
+                border-color: #222;
+                border-radius: 15px;
+                box-shadow: 5px 5px #111;
+            }
+    </style>
+{% endblock %}
+{% block content %}
+<h1> Log In </h1>
+    <form action="" method="post" name="login" class="container-fluid">
+    <p>
+        {{form.email(placeholder="email")}}<br>
+        {{form.password(placeholder="password")}}<br>
+    </p>
+    <p><input type="submit" value="Log In"></p>
+    </form>
+{% endblock %}
