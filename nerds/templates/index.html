@@ -1,31 +1,138 @@
 {% extends "base.html" %}
 {% block title %}login{% endblock %}
 {% block head %}
-    {{ super() }}
-    <style type="text/css">
-        form {
-            color: #111;
-            text-align: center;  
-            margin:
-        }
-        
-        input {
-            margin: 5px;
-        }
-        
-        h1 {
-            text-align: center;
-        }
+{{ super() }}
+<style type="text/css">
+    form {
+        color: #111;
+        text-align: center;  
+        margin:
+    }
 
-    </style>
+    input {
+        margin: 5px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .col-md-4 {
+        float: left;
+        width: 33%;
+        text-align: center;
+        color: #ddd;
+        
+        /* Chrome, Safari, Opera */
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: .3s;
+        /* Standard syntax */
+        animation-name: fade;
+        animation-delay: .3s;
+
+    }
+    
+    .col-md-4:hover {
+        color: #eef;
+    }
+
+    .image-text {
+        text-align: center;
+        font-size: 40px;
+    }
+
+    i {
+        font-size: 100px;
+        padding-bottom: 10px;
+    }
+
+    #main {
+        width: 90%;
+        background-image: url("/static/image/cp_gblur.jpg");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        border-radius: 70px;
+        padding-bottom: 20px;
+
+    }
+
+    h1 {
+        font-size: 75px;
+    }
+
+    #wrapper {
+        margin-left: 200px;
+        margin-right: 200px;
+    }
+
+    /* Chrome, Safari, Opera */
+    @-webkit-keyframes fade {
+        0%   {top:40px; opacity: 0.0;}
+        25%   {top:30px; opacity: 0.2;}
+        50%  {top:20px; opacity: 0.4;}
+        75%   {top:10px; opacity: 0.6;}
+        100%  {top: 0px; opacity: 0.8;}
+    }
+
+    /* Standard syntax */
+    @keyframes fade {
+        0%   {top:40px; opacity: 0.0;}
+        25%   {top:30px; opacity: 0.2;}
+        50%  {top:20px; opacity: 0.4;}
+        75%   {top:10px; opacity: 0.6;}
+        100%  {top: 0px; opacity: 0.8;}
+    }
+
+</style>
 {% endblock %}
 {% block content %}
-<h1> Log In </h1>
-    <form action="" method="post" name="login">
-    <p>
-        {{form.email()}}<br>
-        {{form.password()}}<br>
-    </p>
-    <p><input type="submit" value="Log In"></p>
-    </form>
+<div id="wrapper-ws">
+    <div id="main" class="container-fluid">
+        <h1> Welcome to Nerds Reborn </h1>
+        <h2 style="margin-bottom: 20%; text-align: center"> Compare classes with students at College Park </h2>
+        {% if not session["user_id"] %}
+        <a href="/register/">
+            <div class="col-md-4">
+                <i class="glyphicon glyphicon-user"></i>
+                <div class="image-text">
+                    Sign Up
+                </div>
+            </div>
+        </a>
+        <a href="/login/">
+            <div class="col-md-4">
+                <i class="glyphicon glyphicon-log-in"></i>
+                <div class="image-text">
+                    Sign In
+                </div>
+            </div>
+        </a>
+        <a href="/search/">
+            <div class="col-md-4">
+                <i class="glyphicon glyphicon-search"></i> <br>
+                <div class="image-text">
+                    Search
+                </div>
+            </div>
+        </a>
+        {% else %}
+        <a href="/user/{{session.user_id}}">
+            <div class="col-md-4" style="width: 50%;">
+                <i class="glyphicon glyphicon-list-alt"></i>
+                <div class="image-text">
+                    {{session["firstlast"]}}
+                </div>
+            </div>
+        </a>
+        <a href="/search/" >
+            <div class="col-md-4" style="width: 50%;">
+                <i class="glyphicon glyphicon-search"></i> <br>
+                <div class="image-text">
+                    Search
+                </div>
+            </div>
+        </a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

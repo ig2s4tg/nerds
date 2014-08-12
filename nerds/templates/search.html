@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    form {
+        color: #111;
+        text-align: center;  
+    }
+
+    input {
+        color: #222;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #content {
+        background-color: #222;
+        width: 50%;
+        height: 100%;
+        border-style: solid;
+        border-width: 3px;
+        border-color: #222;
+        border-radius: 15px;
+        box-shadow: 5px 5px #111;
+        max-height: 800px;
+        overflow-y: scroll;
+        text-align: center;
+
+    }
+    
+    .name-container {
+        text-align: left;
+        margin-left: 10%;
+        
+    }
+    
+    a:hover {
+        color: #ddd;
+        text-decoration: none;
+    }
+    
+</style>
+    
+<script>
+$(document).ready(function(){
+    $('#search-users').keyup(function() {
+        var i;
+        for (i = 0; i < $('.fullname').length; ++i) {
+            if ($('.fullname')[i].innerText.toUpperCase().indexOf($(this).val().toUpperCase()) <= -1) {
+                $('.fullname')[i].style.display = 'none';
+            }
+            else {
+                $('.fullname')[i].style.display = 'block';
+            }
+        }
+});
+});
+    
+</script>
+
+{% endblock %}
+{% block content %}
+<h1> Search for a user </h1>
+<input type='text' id="search-users">
+{% for user in users %}
+    <div class='name-container'>
+        <a href="/user/{{user.id}}" ><span class='fullname'>{{user.firstname}}&nbsp;{{user.lastname}} </span></a>
+    </div>
+{% endfor %}
+{% endblock %}

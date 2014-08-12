@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% block title %}login{% endblock %}
+{% block title %}Edit Schedule{% endblock %}
 {% block head %}
     {{ super() }}
     <style type="text/css">
         form {
             color: #111;
             text-align: center;  
-            margin:
         }
         
         input {
@@ -19,23 +18,18 @@
         
         #content {
             background-color: #222;
-                width: 800px;
-                height: 800px;
+                width: 40%;
+                height: 100%;
                 border-style: solid;
                 border-width: 3px;
                 border-color: #222;
                 border-radius: 15px;
-                
+                box-shadow: 5px 5px #111;
+                max-height: 800px;
             }
     </style>
 {% endblock %}
 {% block content %}
-<h1> Log In </h1>
-    <form action="" method="post" name="login">
-    <p>
-        {{form.email()}}<br>
-        {{form.password()}}<br>
-    </p>
-    <p><input type="submit" value="Log In"></p>
-    </form>
+<h1> Edit Schedule </h1>
+    
 {% endblock %}

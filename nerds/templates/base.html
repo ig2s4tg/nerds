@@ -10,16 +10,44 @@
         <!-- Bootstrap -->
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
         <script src="http://code.jquery.com/jquery-latest.js"></script>
         <script src="/static/js/facebook.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <script>
+            $(window).bind("load", function() {
+                $.getScript('/static/js/facebook.js', function() {
+                });
+            });
+        </script>
+
+        <script>
+            
+            //google analytics tracking
+            
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function() {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-53731118-1', 'auto');
+            ga('send', 'pageview');
+
+        </script>
 
         <!-- fonts -->
         <link href='http://fonts.googleapis.com/css?family=Ubuntu|Audiowide|Rock+Salt|Orbitron' rel='stylesheet' type='text/css'>
 
         <style>
-            
-            
+
+
             body {
                 font-family: 'Ubuntu', sans-serif;
                 background-image: url('http://i.imgur.com/wFC8faU.png');
@@ -27,13 +55,13 @@
                 background-color: #222;
                 color: #ddd;
             }
-            
+
             .navbar-brand {
                 font-family: 'Ubuntu', sans-serif;
                 font-weight: bold;
                 letter-spacing: 3px;
             }
-            
+
             .footer {
                 position: absolute;
                 bottom: 0;
@@ -43,16 +71,57 @@
                 text-align: center;
                 color: #ddd;
             }
-            
+
             .divider {
                 padding: 20px;
             }
-            
+
             a {
                 color: #777;
             }
 
-            
+            .twitter-share-button {
+                vertical-align: middle;
+            }
+
+            .fb-share-button {
+
+            }
+
+            .dropdown i {
+                font-size: 1em;
+                float: right;
+            }
+
+            #content {
+
+                /* Chrome, Safari, Opera */
+                -webkit-animation-name: fade;
+                -webkit-animation-duration: .3s;
+                /* Standard syntax */
+                animation-name: fade;
+                animation-delay: .3s;
+            }
+
+            /* Chrome, Safari, Opera */
+            @-webkit-keyframes fade {
+                0%   {top:40px; opacity: 0.0;}
+            25%   {top:30px; opacity: 0.2;}
+            50%  {top:20px; opacity: 0.4;}
+            75%   {top:10px; opacity: 0.6;}
+            100%  {top: 0px; opacity: 0.8;}
+            }
+
+            /* Standard syntax */
+            @keyframes fade {
+                0%   {top:40px; opacity: 0.0;}
+            25%   {top:30px; opacity: 0.2;}
+            50%  {top:20px; opacity: 0.4;}
+            75%   {top:10px; opacity: 0.6;}
+            100%  {top: 0px; opacity: 0.8;}
+            }
+
+
         </style>
 
 
@@ -67,6 +136,12 @@
 
 
     <body>
+        <!-- for facebook share button -->
+        <div id="fb-root"></div>
+
+
+
+
         <nav class="navbar navbar-inverse" role="navigation">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
@@ -86,14 +161,14 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if not session["user_id"] %}
                         <li><a href="/login/">Sign In</a></li>
-                        <li><a href="/register/">Register</a></li>
+                        <li><a href="/register/">Sign Up</a></li>
                         {% else %}
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ session["firstlast"] }} <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user" style="float: left;"></i> &nbsp; {{ session["firstlast"] }} <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="/user/{{session.user_id}}" >my classes</a></li>
+                                <li><a href="/user/{{session.user_id}}" > my classes &nbsp;&nbsp; <i class="glyphicon glyphicon-list-alt"></i></a></li>
                                 <li class="divider2"></li>
-                                <li><a href="/logout/">log out</a></li>
+                                <li><a href="/logout/">  log out &nbsp;&nbsp; <i class="glyphicon glyphicon-log-out"></i></a></li>
                             </ul>
                         </li>
                         {% endif %}
@@ -101,14 +176,14 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
-        
+
         {% block flashbox %}{% endblock %}
-        
+
 
         <div id="content" class="container-fluid">
             {% block content %}{% endblock %}
         </div>
-        
+
         <div class="footer">
             <div class="container-fluid">
                 <a href="/">home</a>
@@ -116,10 +191,23 @@
                 <a href="/about/">about</a>
                 <span class="divider">.</span>
                 <a href="/contact/">contact</a>
+                <span class="divider">.</span>
+                <span class="fb-share-button" data-href="http://nerds.waltersagehorn.com/"></span>
+                <span class="divider">.</span>
+                <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://nerds.waltersagehorn.com/" data-text="Compare classes using Nerds Reborn.">Tweet</a>
+                <script>!function(d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+                        if (!d.getElementById(id)) {
+                            js = d.createElement(s);
+                            js.id = id;
+                            js.src = p + '://platform.twitter.com/widgets.js';
+                            fjs.parentNode.insertBefore(js, fjs);
+                        }
+                    }(document, 'script', 'twitter-wjs');</script>
             </div>
         </div>
-        
-        
+
+
 
 
 
