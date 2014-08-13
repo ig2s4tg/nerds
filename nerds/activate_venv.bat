@@ -1,1 +1,0 @@
-start C:\Users\Walter\Documents\GitHub\nerds\venv\Scripts\activate
