@@ -194,6 +194,10 @@ def user_overview(user_id):
 def secret_clubhouse():
     return "no girls allowed!"
 
+@app.route('/about/')
+def about():
+    return render_template('about.html')
+
 @app.route('/search/')
 def search():
     users = User.query.order_by("lastname")

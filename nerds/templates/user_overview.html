@@ -25,24 +25,57 @@
         border-color: #222;
         border-radius: 15px;
         box-shadow: 5px 5px #111;
-
+        max-height: 800px;
     }
+    
+    #schedule {
+        max-height: 700px;
+        overflow-y: scroll;
+    }
+    
+    a:hover {
+        color: #eef;
+        text-decoration: none;
+    }
+    
+    .class-deets {
+        margin-left: 5%;
+    }
+    
+    .user-class {
+        margin-left: 10%;
+    }
+    
+    
 </style>
+
+
+<script>
+    //removes the N/A from class titles
+$(document).ready(function(){   
+    var i;
+        for (i = 0; i < $('.dif').length; ++i) {
+            console.log($('.dif')[i].innerText);
+            if ($('.dif')[i].innerText === "N/A") {
+                
+                $('.dif')[i].style.display = 'none'
+            }
+        }
+});    
+</script>
+
 {% endblock %}
 {% block content %}
 <h1> {{user.firstname}}&nbsp;{{user.lastname}}</h1>
 <div id="schedule">
-    {{combined}}
-    
-    <br><br>
-    
  {% for i in combined %}
-  {{i[0].teacher}}
+  P{{i[0].period}}<span class="class-deets"> {{i[0].teacher}} - <span class="dif">{{i[0].dif}}</span> {{i[0].classname}}</span>
   {% for j in i[1] %}
-  {{j.firstname}}
+  <div class="user-class">
+  <a href="/user/{{j.id}}">&nbsp;&nbsp;{{j.firstname}}&nbsp;{{j.lastname}}</a>
+  </div>
  {% endfor %}
   <br>
  {% endfor %}
-
 </div>
 {% endblock %}
