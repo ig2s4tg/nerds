@@ -1,7 +1,21 @@
 {% extends "base.html" %}
-{% block title %}login{% endblock %}
+{% block title %}Not Found{% endblock %}
 {% block head %}
 {{ super() }}
+<script>
+function goBack() {
+    window.history.back()
+}
+
+
+$(document).ready(function(){
+    console.log("pass: " + $('#passed-in').text() + "     session: " + $('#session').text())
+    if ($('#passed-in').text() ===  $('#session').text()) {
+        $('.own-sched').show();
+    }
+});
+    
+</script>
 <style type="text/css">
     form {
         color: #111;
@@ -30,14 +44,38 @@
     p {
         text-align: center;
     }
+    
+    button {
+        color: #222;
+    }
+    
+    .hidden {
+        display: block;
+    }
+    
+    .own-sched {
+        display: none;
+        text-align: center;
+        color: #ddd;
+        text-decoration: none;
+    }
+
+    .own-sched :hover {
+        text-align: center;
+        color: #eef;
+        text-decoration: none;
+    }
 </style>
 {% endblock %}
 {% block content %}
 <h1> Schedule not found </h1>
-<form action="" method="post" name="login" class="container-fluid">
+    <span id='passed-in' class='hidden'>{{user_id}}</span>
+    <span id='session' class='hidden'>{{session["user_id"]}}</span>
     <p>
-        Sorry, this user hasn't set up their schedule yet.
+        Sorry, this user hasn't set up their schedule yet. <br><br>
+        <button onclick="goBack()">Go Back</button>
     </p>
-    <p><input type="submit" value="Log In"></p>
-</form>
+    
+    <div class="own-sched"> <a href="/edit/"> Edit your schedule </a> </div>
+    
 {% endblock %}

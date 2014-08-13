@@ -67,7 +67,7 @@ $(document).ready(function(){
 <input type='text' id="search-users">
 {% for user in users %}
     <div class='name-container'>
-        <a href="/user/{{user.id}}" ><span class='fullname'>{{user.firstname}}&nbsp;{{user.lastname}} </span></a>
+        <a href="/user/{{user.id}}" ><span class='fullname'><i class="glyphicon glyphicon-user" ></i> &nbsp;&nbsp;{{user.firstname}}&nbsp;{{user.lastname}} </span></a>
     </div>
 {% endfor %}
 {% endblock %}

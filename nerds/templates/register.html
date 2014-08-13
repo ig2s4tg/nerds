@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}login{% endblock %}
+{% block title %}Sign Up{% endblock %}
 {% block head %}
     {{ super() }}
     <style type="text/css">
@@ -36,7 +36,7 @@
 {% endblock %}
 {% block content %}
 <h1> Sign Up </h1>
-    <form action="" method="post" name="login">
+    <form action="" method="post" name="register">
     <p>
         <div>{{ form.first_name(placeholder="first name") }}</div>
         {% if form.first_name.errors %}

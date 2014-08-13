@@ -1,34 +1,48 @@
 {% extends "base.html" %}
 {% block title %}{{user.firstname}} {{user.lastname}}{% endblock %}
 {% block head %}
-    {{ super() }}
-    <style type="text/css">
-        form {
-            color: #111;
-            text-align: center;  
-        }
-        
-        input {
-            margin: 5px;
-        }
-        
-        h1 {
-            text-align: center;
-        }
-        
-        #content {
-            background-color: #222;
-                width: 40%;
-                height: 100%;
-                border-style: solid;
-                border-width: 3px;
-                border-color: #222;
-                border-radius: 15px;
-                box-shadow: 5px 5px #111;
-                
-            }
-    </style>
+{{ super() }}
+<style type="text/css">
+    form {
+        color: #111;
+        text-align: center;  
+    }
+
+    input {
+        margin: 5px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #content {
+        background-color: #222;
+        width: 40%;
+        height: 100%;
+        border-style: solid;
+        border-width: 3px;
+        border-color: #222;
+        border-radius: 15px;
+        box-shadow: 5px 5px #111;
+
+    }
+</style>
 {% endblock %}
 {% block content %}
+<h1> {{user.firstname}}&nbsp;{{user.lastname}}</h1>
+<div id="schedule">
+    {{combined}}
     
+    <br><br>
+    
+ {% for i in combined %}
+  {{i[0].teacher}}
+  {% for j in i[1] %}
+  {{j.firstname}}
+ {% endfor %}
+  <br>
+ {% endfor %}
+
+</div>
 {% endblock %}

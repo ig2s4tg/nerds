@@ -1,35 +1,102 @@
 {% extends "base.html" %}
 {% block title %}Edit Schedule{% endblock %}
 {% block head %}
-    {{ super() }}
-    <style type="text/css">
-        form {
-            color: #111;
-            text-align: center;  
-        }
-        
-        input {
-            margin: 5px;
-        }
-        
-        h1 {
-            text-align: center;
-        }
-        
-        #content {
-            background-color: #222;
-                width: 40%;
-                height: 100%;
-                border-style: solid;
-                border-width: 3px;
-                border-color: #222;
-                border-radius: 15px;
-                box-shadow: 5px 5px #111;
-                max-height: 800px;
-            }
-    </style>
+{{ super() }}
+<style type="text/css">
+    form {
+        color: #111;
+        text-align: center;  
+    }
+
+    input {
+        margin: 5px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .newclass {
+        text-align: center;
+        color: #ddd;
+        text-decoration: none;
+    }
+
+    .newclass :hover {
+        text-align: center;
+        color: #eef;
+        text-decoration: none;
+    }
+
+    #content {
+        background-color: #222;
+        width: 40%;
+        height: 100%;
+        border-style: solid;
+        border-width: 3px;
+        border-color: #222;
+        border-radius: 15px;
+        box-shadow: 5px 5px #111;
+        max-height: 800px;
+    }
+    
+    .errors {
+        color: red;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <h1> Edit Schedule </h1>
-    
+<form action="" method="post" name="edit" class="container-fluid">
+
+    <p>
+    <div class='edit-select'>
+        {{form.period1()}}<br>
+        {% if form.period1.errors %}
+        <div class="errors">{% for error in form.period1.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </div>
+    <div class='edit-select'>
+        {{form.period2()}}<br>
+        {% if form.period2.errors %}
+        <div class="errors">{% for error in form.period2.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </div>
+    <div class='edit-select'>
+        {{form.period3()}}<br>
+        {% if form.period3.errors %}
+        <div class="errors">{% for error in form.period3.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </div>
+    <div class='edit-select'>
+        {{form.period4()}}<br>
+        {% if form.period4.errors %}
+        <div class="errors">{% for error in form.period4.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </div>
+    <div class='edit-select'>
+        {{form.period5()}}<br>
+        {% if form.period5.errors %}
+        <div class="errors">{% for error in form.period5.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </div>
+    <div class='edit-select'>
+        {{form.period6()}}<br>
+        {% if form.period6.errors %}
+        <div class="errors">{% for error in form.period6.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </div>
+    <div class='edit-select'>
+        {{form.period7()}}<br>
+        {% if form.period7.errors %}
+        <div class="errors">{% for error in form.period7.errors %}<p>{{ error }}</p>{% endfor %}</div>
+        {% endif %}
+    </div>      
+</p>
+<p><input type="submit" value="Edit Schedule"></p>
+</form>
+
+<div class='newclass'>
+    <a href='/new_class/'> Don't see your class? Create a new one. </a>
+</div>
 {% endblock %}

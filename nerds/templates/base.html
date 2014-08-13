@@ -22,9 +22,9 @@
         </script>
 
         <script>
-            
+
             //google analytics tracking
-            
+
             (function(i, s, o, g, r, a, m) {
                 i['GoogleAnalyticsObject'] = r;
                 i[r] = i[r] || function() {
@@ -102,6 +102,12 @@
                 animation-name: fade;
                 animation-delay: .3s;
             }
+            
+            .alert {
+                text-align: center;
+                max-width: 40%;
+                margin: 0px auto;
+            }
 
             /* Chrome, Safari, Opera */
             @-webkit-keyframes fade {
@@ -177,7 +183,16 @@
             </div><!-- /.container-fluid -->
         </nav>
 
-        {% block flashbox %}{% endblock %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> 
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
 
         <div id="content" class="container-fluid">

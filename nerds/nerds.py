@@ -1,8 +1,9 @@
 from flask import Flask, render_template, redirect, request, session, url_for, flash
 from flask.ext.sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, \
+     check_password_hash
 
 from forms import *
-from models import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nerds.db'
@@ -11,6 +12,78 @@ db = SQLAlchemy(app)
 app.secret_key = 'QWERTYUIOPASDFGHJKLZXCVBNM'
 
 
+"""
+      ********************************
+      **********   MODELS   **********
+      ********************************
+"""
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(30))
+    lastname = db.Column(db.String(30))
+    email = db.Column(db.String(50), unique=True)
+    pwhash = db.Column(db.Binary(20)) #use hex and unhex
+    schedID = db.Column(db.ForeignKey('schedule.id'))
+
+    def __init__(self, first, last, mail, pw):
+        self.firstname = first
+        self.lastname = last
+        self.email = mail
+        self.pwhash = generate_password_hash(pw)
+        self.schedID = 0;
+
+    def check_password(self, password):
+        return check_password_hash(self.pwhash, password)
+
+    def set_schedule(self, id):
+        print "\n\n setting sched to " + str(id)
+        self.schedID = id
+        print "\n\n sched is now " + str(self.schedID)
+        db.session.commit()
+
+
+class Schedule(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    period1 = db.Column(db.ForeignKey('class.id'))
+    period2 = db.Column(db.ForeignKey('class.id'))
+    period3 = db.Column(db.ForeignKey('class.id'))
+    period4 = db.Column(db.ForeignKey('class.id'))
+    period5 = db.Column(db.ForeignKey('class.id'))
+    period6 = db.Column(db.ForeignKey('class.id'))
+    period7 = db.Column(db.ForeignKey('class.id'))
+
+    def __init__(self, fir, sec, thi, fou, fif, six, sev):
+        self.period1 = fir
+        self.period2 = sec
+        self.period3 = thi
+        self.period4 = fou
+        self.period5 = fif
+        self.period6 = six
+        self.period7 = sev
+
+    def change_sched(self, fir, sec, thi, fou, fif, six, sev):
+        self.period1 = fir
+        self.period2 = sec
+        self.period3 = thi
+        self.period4 = fou
+        self.period5 = fif
+        self.period6 = six
+        self.period7 = sev
+
+
+class Class(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    teacher = db.Column(db.String(20))
+    classname = db.Column(db.String(30))
+    dif = db.Column(db.String(10))
+    period = db.Column(db.Integer)
+
+    def __init__(self, teach, cn, df, per):
+        self.teacher = teach
+        self.classname = cn
+        self.dif = df
+        self.period = per
 
 """
       *********************************
@@ -27,7 +100,7 @@ def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         create_user(form.first_name.data.title(), form.last_name.data.title(), form.email.data, form.password.data)
-        flash('Your account was successfully created. Welcome, ' + form.first_name.data.title() + "!")
+        flash('Your account was successfully created. Welcome, ' + form.first_name.data.title() + "!", "success")
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -37,12 +110,12 @@ def login():
     if request.method == 'POST' and form.validate():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.check_password(form.password.data):
-            flash('logged in as ' + user.firstname + " " + user.lastname)
+            flash('logged in as ' + user.firstname + " " + user.lastname, "success")
             session["user_id"] = user.id
             session["firstlast"] = user.firstname + " " + user.lastname
             return redirect(url_for('index')) # or myprofile?
         else:
-            flash('incorrect email or password')
+            flash('incorrect email or password', "danger")
             return redirect(url_for('login'))
     else:
         return render_template('login.html', form=form)
@@ -52,44 +125,69 @@ def logout():
     if "user_id" in session:
         session["user_id"] = ""
         print "logged out"
-        flash("logged out")
+        flash("logged out", "info")
     return redirect(url_for('index'))
 
 @app.route('/edit/', methods=['GET','POST'])
-def class_edit():
+def edit():
+    form = ScheduleForm(request.form)
     if "user_id" in session:
-        form = ScheduleForm(request.form)
         if request.method == 'POST' and form.validate():
-            #class1id = form.
-            class2id = create_class(form.c2_teacher.data, form.c2_dif.data, form.c2_period.data)
-            class3id = create_class(form.c3_teacher.data, form.c3_dif.data, form.c3_period.data)
-            class4id = create_class(form.c4_teacher.data, form.c4_dif.data, form.c4_period.data)
-            class5id = create_class(form.c5_teacher.data, form.c5_dif.data, form.c5_period.data)
-            class6id = create_class(form.c6_teacher.data, form.c6_dif.data, form.c6_period.data)
-            class7id = create_class(form.c7_teacher.data, form.c7_dif.data, form.c7_period.data)
-            scheduleID = create_schedule(class1id, class2id, class3id, class4id, class5id, class6id, class7id)
-            User.query.filter_by(id=session["user_id"]).first().set_schedule(scheduleID)
-            flash("schedule edited")
-        else: #the get
-            return render_template('edit_sched.html', classes=User.query.filter_by(id=session["user_id"]).all())
-    else:
-        flash("You need to log in to edit your schedule")
-    return redirect(url_for('index'))
 
-@app.route('/createclass/', methods=['POST'])
+            scheduleID = create_schedule(
+                form.period1.data,
+                form.period2.data,
+                form.period3.data,
+                form.period4.data,
+                form.period5.data,
+                form.period6.data,
+                form.period7.data
+            )
+            print session["user_id"]
+            User.query.filter_by(id=session["user_id"]).first().set_schedule(scheduleID)
+            flash("schedule edited", "success")
+            return redirect(url_for('user_overview', user_id=session["user_id"]))
+        else:
+            form.period1.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=1).order_by("teacher").all()]
+            form.period2.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=2).order_by("teacher").all()]
+            form.period3.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=3).order_by("teacher").all()]
+            form.period4.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=4).order_by("teacher").all()]
+            form.period5.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=5).order_by("teacher").all()]
+            form.period6.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=6).order_by("teacher").all()]
+            form.period7.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=7).order_by("teacher").all()]
+            return render_template('edit_sched.html', form=form)
+
+    else:
+        flash("You need to log in to edit your schedule", "warning")
+        return redirect(url_for('login'))
+
+@app.route('/new_class/', methods=['GET', 'POST'])
 def new_class():
     form = ClassForm(request.form)
     if request.method == 'POST' and form.validate():
-        create_class(form.teacher.data, form.dif.data, form.period.data)
+        print "######################   posted to new_class   ######################"
+        create_class(form.teacher.data.lower().capitalize(), cap(form.classname.data), form.dif.data, form.period.data)
+        flash("class created", "success")
+        return redirect(url_for('edit'))
+    else:
+        return render_template('new_class.html', form=form)
 
 
 @app.route('/user/<int:user_id>/')
 def user_overview(user_id):
-    if User.query.filter_by(id=user_id).first() is not None: #if it's a real user
-        schedule = get_schedule(user_id)
-        return render_template('user_overview.html', user=User.query.filter_by(id=user_id).first(), schedule=schedule)
+    user = User.query.filter_by(id=user_id).first()
+    print "in user overview************************************"
+    if user is not None: #if it's a real user
+        schedule = get_classes(user.schedID)
+        if len(schedule) == 0:
+            return render_template('no_sched.html', user_id=user_id)
+        else:
+            classmates = get_classmates(user.schedID)
+            combined = combine_mates(schedule, classmates)
+            print combined
+            return render_template('user_overview.html', user=User.query.filter_by(id=user_id).first(), combined=combined)
     else:
-        flash("that user does not exist")
+        flash("that user does not exist", "warning")
         return redirect(url_for('search'))
 
 @app.route('/secretclubhouse/')
@@ -101,6 +199,11 @@ def search():
     users = User.query.order_by("lastname")
     return render_template('search.html', users=users)
 
+@app.route('/no_sched/')
+def no_sched(user_id):
+    print "in no sched"
+    return render_template('no_sched.html', user_id=user_id)
+
 def create_user(fn, ln, email, pw):
     if User.query.filter_by(email=email).first() is None:
         new_user = User(fn, ln, email, pw)
@@ -108,7 +211,7 @@ def create_user(fn, ln, email, pw):
         db.session.commit()
         return new_user.id
     else:
-        flash("That email is already in use!")
+        flash("That email is already in use!", "danger")
         return redirect(url_for('register'))
 
 def create_schedule(c1, c2, c3, c4, c5, c6, c7):
@@ -117,32 +220,100 @@ def create_schedule(c1, c2, c3, c4, c5, c6, c7):
     db.session.commit()
     return new_schedule.id
 
-def create_class(teach, dif, per):
-    new_class = Class(teach, dif, per)
-    db.session.add(new_schedule)
+def create_class(teach, cn, dif, per):
+    print "created a new class - " + teach
+    new_class = Class(teach, cn, dif, per)
+    db.session.add(new_class)
     db.session.commit()
     return new_class.id
 
+# to deal with the capitalization of Roman numerals in class names
+def cap(my):
+    my = my.upper().split(" ")
+    new = []
+    for x in my:
+        if x == "I" or x == "II" or x == "III" or x == "IV" or x == "V":
+            new.append(x)
+        else:
+            new.append(x.lower().capitalize())
+    final = ""
+    for x in new:
+        print x
+        final += str(x) + " "
+        print final
+    final = final[:-1]
+    return final
 
 
 
 #returns a list of classes
-def get_schedule(user_id):
-    user = User.query.filter_by(id=user_id).first()
-    schedule = Schedule.query.filter_by(id=user.schedID).first()
+def get_classes(schedID):
+    schedule = Schedule.query.filter_by(id=schedID).first()
     if schedule is None:
-        print "schedule is None"
-        return render_template('no_sched.html')
+        return []
     else:
-        print "schedule is " + schedule.id
         return [
-            Class.query.filter_by(id=schedule.first).first(),
-            Class.query.filter_by(id=schedule.second).first(),
-            Class.query.filter_by(id=schedule.third).first(),
-            Class.query.filter_by(id=schedule.fourth).first(),
-            Class.query.filter_by(id=schedule.fifth).first(),
-            Class.query.filter_by(id=schedule.sixth).first(),
-            Class.query.filter_by(id=schedule.seventh).first()]
+            Class.query.filter_by(id=schedule.period1).first(),
+            Class.query.filter_by(id=schedule.period2).first(),
+            Class.query.filter_by(id=schedule.period3).first(),
+            Class.query.filter_by(id=schedule.period4).first(),
+            Class.query.filter_by(id=schedule.period5).first(),
+            Class.query.filter_by(id=schedule.period6).first(),
+            Class.query.filter_by(id=schedule.period7).first()]
+
+def get_schedule(schedID):
+    schedule = Schedule.query.filter_by(id=schedID).first()
+    if schedule is None:
+        return []
+    else:
+        return schedule
+
+def get_classmates(sched_id):
+    schedule = Schedule.query.filter_by(id=sched_id).first()
+    if schedule is None:
+        return []
+    else:
+        all_users = User.query.all()
+        all_sched = []
+        period1mates = []
+        period2mates = []
+        period3mates = []
+        period4mates = []
+        period5mates = []
+        period6mates = []
+        period7mates = []
+
+        for u in all_users:
+            all_sched.append(get_schedule(u.schedID))
+
+        for i in range(len(all_sched)):
+            if all_sched[i] != []:
+                if all_sched[i].period1 == schedule.period1:
+                    period1mates.append(all_users[i])
+                if all_sched[i].period2 == schedule.period2:
+                    period2mates.append(all_users[i])
+                if all_sched[i].period3 == schedule.period3:
+                    period3mates.append(all_users[i])
+                if all_sched[i].period4 == schedule.period4:
+                    period4mates.append(all_users[i])
+                if all_sched[i].period5 == schedule.period5:
+                    period5mates.append(all_users[i])
+                if all_sched[i].period6 == schedule.period6:
+                    period6mates.append(all_users[i])
+                if all_sched[i].period7 == schedule.period7:
+                    period7mates.append(all_users[i])
+
+        return [period1mates, period2mates, period3mates, period4mates, period5mates, period6mates, period7mates]
+
+def combine_mates(s, m):
+    n = []
+    for i in range(len(s)):
+        n.append([s[i], m[i]])
+    return n
+
+
+
+
 
 
 if __name__ == "__main__":
