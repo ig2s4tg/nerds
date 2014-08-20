@@ -1,0 +1,61 @@
+{% extends "mobile/base.html" %}
+{% block title %}New Class{% endblock %}
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    form {
+        color: #111;
+        text-align: center;  
+    }
+
+    input {
+        margin: 5px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #content {
+        background-color: #222;
+        width: 90%;
+        height: 100%;
+        border-style: solid;
+        border-width: 3px;
+        border-color: #222;
+        border-radius: 15px;
+        box-shadow: 5px 5px #111;
+        max-height: 800px;
+    }
+    .errors {
+        color: red;
+    }      
+</style>
+{% endblock %}
+{% block content %}
+<h1> Log In </h1>
+<form action="/new_class/" method="post" name="new_class" class="container-fluid">
+    <p>
+        {{form.teacher(placeholder="Teacher Name (Last Only)")}}<br>
+        {% if form.teacher.errors %}
+    <div class="errors">{% for error in form.teacher.errors %}<p>{{ error }}</p>{% endfor %}</div>
+    {% endif %}
+
+    {{form.classname(placeholder="Class Name i.e. French IV")}}<br>
+    {% if form.classname.errors %}
+    <div class="errors">{% for error in form.classname.errors %}<p>{{ error }}</p>{% endfor %}</div>
+    {% endif %}
+
+    {{form.dif()}}<br>
+    {% if form.dif.errors %}
+    <div class="errors">{% for error in form.dif.errors %}<p>{{ error }}</p>{% endfor %}</div>
+    {% endif %}
+
+    {{form.period()}}<br>
+    {% if form.period.errors %}
+    <div class="errors">{% for error in form.period.errors %}<p>{{ error }}</p>{% endfor %}</div>
+    {% endif %}
+</p>
+<p><input type="submit" value="Create Class"></p>
+</form>
+{% endblock %}

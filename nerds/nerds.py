@@ -1,11 +1,14 @@
 from flask import Flask, render_template, redirect, request, session, url_for, flash
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.mobility import Mobility
+from flask.ext.mobility.decorators import mobile_template
 from werkzeug.security import generate_password_hash, \
      check_password_hash
 
 from forms import *
 
 app = Flask(__name__)
+Mobility(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nerds.db'
 db = SQLAlchemy(app)
 
@@ -37,9 +40,7 @@ class User(db.Model):
         return check_password_hash(self.pwhash, password)
 
     def set_schedule(self, id):
-        print "\n\n setting sched to " + str(id)
         self.schedID = id
-        print "\n\n sched is now " + str(self.schedID)
         db.session.commit()
 
 
@@ -92,20 +93,23 @@ class Class(db.Model):
 """
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+@mobile_template('{mobile/}index.html')
+def index(template):
+    return render_template(template)
 
 @app.route("/register/", methods=['GET','POST'])
-def register():
+@mobile_template('{mobile/}register.html')
+def register(template):
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         create_user(form.first_name.data.title(), form.last_name.data.title(), form.email.data, form.password.data)
         flash('Your account was successfully created. Welcome, ' + form.first_name.data.title() + "!", "success")
         return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+    return render_template(template, form=form)
 
 @app.route("/login/", methods=['GET','POST'])
-def login():
+@mobile_template('{mobile/}login.html')
+def login(template):
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter_by(email=form.email.data).first()
@@ -118,18 +122,18 @@ def login():
             flash('incorrect email or password', "danger")
             return redirect(url_for('login'))
     else:
-        return render_template('login.html', form=form)
+        return render_template(template, form=form)
 
 @app.route('/logout/')
 def logout():
     if "user_id" in session:
         session["user_id"] = ""
-        print "logged out"
         flash("logged out", "info")
     return redirect(url_for('index'))
 
 @app.route('/edit/', methods=['GET','POST'])
-def edit():
+@mobile_template('{mobile/}edit_sched.html')
+def edit(template):
     form = ScheduleForm(request.form)
     if "user_id" in session:
         if request.method == 'POST' and form.validate():
@@ -143,7 +147,6 @@ def edit():
                 form.period6.data,
                 form.period7.data
             )
-            print session["user_id"]
             User.query.filter_by(id=session["user_id"]).first().set_schedule(scheduleID)
             flash("schedule edited", "success")
             return redirect(url_for('user_overview', user_id=session["user_id"]))
@@ -155,58 +158,59 @@ def edit():
             form.period5.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=5).order_by("teacher").all()]
             form.period6.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=6).order_by("teacher").all()]
             form.period7.choices = [(c.id, c.teacher + " - " + c.dif + " " + c.classname) for c in Class.query.filter_by(period=7).order_by("teacher").all()]
-            return render_template('edit_sched.html', form=form)
+            return render_template(template, form=form)
 
     else:
         flash("You need to log in to edit your schedule", "warning")
         return redirect(url_for('login'))
 
 @app.route('/new_class/', methods=['GET', 'POST'])
-def new_class():
+@mobile_template('{mobile/}new_class.html')
+def new_class(template):
     form = ClassForm(request.form)
     if request.method == 'POST' and form.validate():
-        print "######################   posted to new_class   ######################"
         create_class(form.teacher.data.lower().capitalize(), cap(form.classname.data), form.dif.data, form.period.data)
         flash("class created", "success")
         return redirect(url_for('edit'))
     else:
-        return render_template('new_class.html', form=form)
+        return render_template(template, form=form)
 
 
 @app.route('/user/<int:user_id>/')
-def user_overview(user_id):
+@mobile_template('{mobile/}user_overview.html')
+def user_overview(template, user_id):
     user = User.query.filter_by(id=user_id).first()
-    print "in user overview************************************"
     if user is not None: #if it's a real user
         schedule = get_classes(user.schedID)
         if len(schedule) == 0:
-            return render_template('no_sched.html', user_id=user_id)
+            return render_template("no_sched.html", user_id=user_id)
         else:
             classmates = get_classmates(user.schedID)
             combined = combine_mates(schedule, classmates)
-            print combined
-            return render_template('user_overview.html', user=User.query.filter_by(id=user_id).first(), combined=combined)
+            return render_template(template, user=User.query.filter_by(id=user_id).first(), combined=combined)
     else:
         flash("that user does not exist", "warning")
-        return redirect(url_for('search'))
+        return render_template("no_sched.html", user_id=user_id)
 
 @app.route('/secretclubhouse/')
 def secret_clubhouse():
     return "no girls allowed!"
 
 @app.route('/about/')
-def about():
-    return render_template('about.html')
+@mobile_template('{mobile/}about.html')
+def about(template):
+    return render_template(template)
 
 @app.route('/search/')
-def search():
+@mobile_template('{mobile/}search.html')
+def search(template):
     users = User.query.order_by("lastname")
-    return render_template('search.html', users=users)
+    return render_template(template, users=users)
 
 @app.route('/no_sched/')
+#@mobile_template('{mobile/}no_sched.html')
 def no_sched(user_id):
-    print "in no sched"
-    return render_template('no_sched.html', user_id=user_id)
+    return render_template("no_sched.html", user_id=user_id)
 
 def create_user(fn, ln, email, pw):
     if User.query.filter_by(email=email).first() is None:
@@ -225,7 +229,7 @@ def create_schedule(c1, c2, c3, c4, c5, c6, c7):
     return new_schedule.id
 
 def create_class(teach, cn, dif, per):
-    print "created a new class - " + teach
+    print "created a new class - " + teach + " " + dif + " " + cn + " " + str(per)
     new_class = Class(teach, cn, dif, per)
     db.session.add(new_class)
     db.session.commit()
@@ -242,9 +246,7 @@ def cap(my):
             new.append(x.lower().capitalize())
     final = ""
     for x in new:
-        print x
         final += str(x) + " "
-        print final
     final = final[:-1]
     return final
 

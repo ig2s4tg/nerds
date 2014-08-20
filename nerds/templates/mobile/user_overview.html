@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "mobile/base.html" %}
 {% block title %}{{user.firstname}} {{user.lastname}}{% endblock %}
 {% block head %}
 {{ super() }}
@@ -33,7 +33,7 @@ $(document).ready(function(){
 
     #content {
         background-color: #222;
-        width: 40%;
+        width: 90%;
         height: 100%;
         border-style: solid;
         border-width: 3px;
@@ -44,7 +44,8 @@ $(document).ready(function(){
     }
     
     #schedule {
-        margin-left: 30px;
+        font-size: 12px;
+        margin-left: 10px;
         max-height: 700px;
         overflow-y: scroll;
     }

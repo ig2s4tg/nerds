@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block head %}
         <title>{% block title %}{% endblock %} - Nerds Reborn</title>
-
+        
         <!-- Bootstrap -->
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
 
@@ -67,7 +67,7 @@
             .footer {
                 margin-top: 10px;
                 width: 100%;
-                height: 60px;
+                height: 70px;
                 background-color: #222;
                 text-align: center;
                 color: #ddd;
@@ -82,10 +82,12 @@
                 /* Pad bottom by footer height */
                 padding: 0 0 60px;
                 padding-top: 70px;
+                
             }
 
-            .divider {
-                padding: 20px;
+            .divider-dot {
+                padding: 10px;
+                margin: 0px;
             }
 
             a {
@@ -106,7 +108,6 @@
             }
 
             #content {
-                
                 /* Chrome, Safari, Opera */
                 -webkit-animation-name: fade;
                 -webkit-animation-duration: .3s;
@@ -117,13 +118,8 @@
 
             .alert {
                 text-align: center;
-                max-width: 40%;
+                max-width: 90%;
                 margin: 0px auto;
-            }
-            
-            .twitter-share-button, .facebook-share-button {
-                
-                display: inline;
             }
 
             /* Chrome, Safari, Opera */
@@ -220,13 +216,12 @@
         <div class="footer">
             <div class="container-fluid">
                 <a href="/">home</a>
-                <span class="divider">.</span>
+                <span class="divider-dot">.</span>
                 <a href="/about/">about</a>
-                <span class="divider">.</span>
+                <span class="divider-dot">.</span>
                 <a href="mailto:wsagehorn@gmail.com">contact</a>
-                <span class="divider">.</span>
+                <br>
                 <span class="fb-share-button" data-href="http://nerds.waltersagehorn.com/"></span>
-                <span class="divider">.</span>
                 <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://nerds.waltersagehorn.com/" data-text="Compare classes using Nerds Reborn.">Tweet</a>
                 <script>!function(d, s, id) {
                         var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';

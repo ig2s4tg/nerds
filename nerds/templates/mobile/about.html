@@ -1,0 +1,57 @@
+{% extends "mobile/base.html" %}
+{% block title %}About{% endblock %}
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    form {
+        color: #111;
+        text-align: center;  
+    }
+
+    input {
+        margin: 5px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #content {
+        background-color: #222;
+        width: 90%;
+        height: 100%;
+        border-style: solid;
+        border-width: 3px;
+        border-color: #222;
+        border-radius: 15px;
+        box-shadow: 5px 5px #111;
+        max-height: 800px;
+    }
+
+    p {
+        margin-left: 8%;
+        margin-top: 8%;
+        margin-right: 8%;
+    }
+
+    .thanks {
+        margin-left: 12%;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<h1> About </h1>
+
+<p>
+    This website was made by Walter Sagehorn as a tool for impatient College Park students who want to see who they have classes with.
+    <a href="http://nerds.ericmart.in">The original Nerds Reborn</a> was created by Eric Martin, a College Park alumni who is currently studying at CalTech. 
+    I rewrote the project in <a href="http://flask.pocoo.org/">Flask</a>, a Python web framework. (Eric used <a href="https://www.djangoproject.com/">Django</a>) 
+    The project source is on GitHub if you want to <a href="https://github.com/ig2s4tg/nerds">check it out.</a>
+    <br><br>
+    Thanks to: <br>
+<div class="thanks">Eric Martin </div>
+<div class="thanks">Zack Collins </div>
+<div class="thanks">Heather Morriss </div>
+</p>
+
+{% endblock %}

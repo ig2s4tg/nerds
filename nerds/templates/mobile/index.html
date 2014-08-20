@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "mobile/base.html" %}
 {% block title %}Home{% endblock %}
 {% block head %}
 {{ super() }}
@@ -14,7 +14,12 @@
     }
 
     h1 {
+        font-size: 30px;
         text-align: center;
+    }
+    
+    h2 {
+        font-size: 20px;
     }
 
     .col-md-4 {
@@ -25,10 +30,10 @@
         
         /* Chrome, Safari, Opera */
         -webkit-animation-name: fade;
-        -webkit-animation-duration: .3s;
+        -webkit-animation-duration: .5s;
         /* Standard syntax */
         animation-name: fade;
-        animation-delay: .3s;
+        animation-delay: .5s;
 
     }
     
@@ -38,31 +43,31 @@
 
     .image-text {
         text-align: center;
-        font-size: 40px;
+        font-size: 15px;
     }
 
     i {
-        font-size: 100px;
+        font-size: 30px;
         padding-bottom: 10px;
     }
 
     #main {
-        width: 90%;
-        background-image: url("http://i.imgur.com/p11GbQe.jpg");
+        width: 95%;
+        background-image: url("http://i.imgur.com/hWu7JWV.jpg");
         background-repeat: no-repeat;
         background-size: 100% 100%;
-        border-radius: 70px;
+        border-radius: 40px;
         padding-bottom: 20px;
 
     }
 
     h1 {
-        font-size: 75px;
+        font-size:40px;
     }
 
     #wrapper {
-        margin-left: 200px;
-        margin-right: 200px;
+        margin-left: 20px;
+        margin-right: 20px;
     }
 
     /* Chrome, Safari, Opera */
@@ -88,7 +93,8 @@
 {% block content %}
 <div id="wrapper-ws">
     <div id="main" class="container-fluid">
-        <h1> Welcome to Nerds Reborn </h1>
+        <h1> Welcome to Nerds Reborn </h1> 
+        
         <h2 style="margin-bottom: 20%; text-align: center"> Compare classes with students at College Park </h2>
         {% if not session["user_id"] %}
         <a href="/register/">

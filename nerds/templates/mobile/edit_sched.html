@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "mobile/base.html" %}
 {% block title %}Edit Schedule{% endblock %}
 {% block head %}
 {{ super() }}
 <style type="text/css">
     form {
         color: #111;
-        text-align: center;  
+        text-align: center;
     }
 
     input {
@@ -30,7 +30,7 @@
 
     #content {
         background-color: #222;
-        width: 40%;
+        width: 90%;
         height: 100%;
         border-style: solid;
         border-width: 3px;
@@ -45,10 +45,11 @@
     }
     
     .edit-select {
-        margin: 10px;
-        margin-left: 30%;
+        margin: 5px;
+        margin-left: 0%;
         float: none;
         text-align: left;
+        font-size: 10px;
     }
     
     .num {
@@ -62,49 +63,49 @@
 
     <p>
     <div class='edit-select'>
-        <span class="num">1.</span> {{form.period1()}}<br>
+        <span class="num">1.</span><br> {{form.period1()}}<br>
         {% if form.period1.errors %}
         <div class="errors">{% for error in form.period1.errors %}<p>{{ error }}</p>{% endfor %}</div>
         {% endif %}
     </div>
     <div class='edit-select'>
-        <span class="num">2.</span> {{form.period2()}}<br>
+        <span class="num">2.</span><br> {{form.period2()}}<br>
         {% if form.period2.errors %}
         <div class="errors">{% for error in form.period2.errors %}<p>{{ error }}</p>{% endfor %}</div>
         {% endif %}
     </div>
     <div class='edit-select'>
-        <span class="num">3.</span> {{form.period3()}}<br>
+        <span class="num">3.</span><br> {{form.period3()}}<br>
         {% if form.period3.errors %}
         <div class="errors">{% for error in form.period3.errors %}<p>{{ error }}</p>{% endfor %}</div>
         {% endif %}
     </div>
     <div class='edit-select'>
-        <span class="num">4.</span> {{form.period4()}}<br>
+        <span class="num">4.</span><br> {{form.period4()}}<br>
         {% if form.period4.errors %}
         <div class="errors">{% for error in form.period4.errors %}<p>{{ error }}</p>{% endfor %}</div>
         {% endif %}
     </div>
     <div class='edit-select'>
-        <span class="num">5.</span> {{form.period5()}}<br>
+        <span class="num">5.</span><br> {{form.period5()}}<br>
         {% if form.period5.errors %}
         <div class="errors">{% for error in form.period5.errors %}<p>{{ error }}</p>{% endfor %}</div>
         {% endif %}
     </div>
     <div class='edit-select'>
-        <span class="num">6.</span> {{form.period6()}}<br>
+        <span class="num">6.</span><br> {{form.period6()}}<br>
         {% if form.period6.errors %}
         <div class="errors">{% for error in form.period6.errors %}<p>{{ error }}</p>{% endfor %}</div>
         {% endif %}
     </div>
     <div class='edit-select'>
-        <span class="num">7.</span> {{form.period7()}}<br>
+        <span class="num">7.</span><br> {{form.period7()}}<br>
         {% if form.period7.errors %}
         <div class="errors">{% for error in form.period7.errors %}<p>{{ error }}</p>{% endfor %}</div>
         {% endif %}
     </div>      
 </p>
-<p><input type="submit" value="Edit Schedule"></p>
+<p><input type="submit" value="Create Schedule"></p>
 </form>
 
 <div class='newclass'>
